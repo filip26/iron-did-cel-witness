@@ -32,3 +32,17 @@ or
 where `@type` is one of
 * `https://w3id.org/security#multibase`
 * `http://www.w3.org/2001/XMLSchema#base64Binary`
+
+### Response
+
+```json
+{
+  "type": "ObliviousSignatureProof",
+  "cryptosuite": "ecdsa",
+  "created": "2025-12-06T22:09:08Z",
+  "proofPurpose": "assertionMethod",
+  "proofValue": "zxwVk4...",
+  "verificationMethod": "did:cel:zW1poy..."
+}
+```
+
