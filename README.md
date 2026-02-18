@@ -38,7 +38,7 @@ where `@type` is one of
 ```json
 {
   "type": "ObliviousSignatureProof",
-  "cryptosuite": "ecdsa",
+  "crypto": "ecdsa",
   "created": "2025-12-06T22:09:08Z",
   "proofPurpose": "assertionMethod",
   "proofValue": "zxwVk4...",
