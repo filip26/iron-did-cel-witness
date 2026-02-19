@@ -16,7 +16,6 @@ Witnesses provide **cryptographic proofs** that an event existed at a specific t
   * Validation – Strictly enforces byte-length requirements (e.g., 32 bytes for Ed25519/P-256) before hitting the KMS API.
   * Efficiency – Uses streaming to minimize memory allocation and `static final` constants for O(1) jump-table execution.
 
-
 ## HTTP Service
 
 ### Request
@@ -50,12 +49,15 @@ where `@type` is one of
 }
 ```
 
-## Prerequisites
+## Build & Deploy
+
+### Prerequisites
 * JDK 25
 * Maven 3.9+
 * KMS Key – Asymmetric Signing (EC or EdDSA).
 
-## Configuration
+### Configuration
+
 The following environment variables are required:
 
 | Variable | Description |
@@ -63,23 +65,43 @@ The following environment variables are required:
 | `KMS_LOCATION` | GCP Region (e.g., `us-central1`) |
 | `KMS_KEY_RING` | Name of the KMS KeyRing |
 | `KMS_KEY_ID` | Name of the CryptoKey |
-| `KMS_VERSION` | Key version (default: `1`) |
+| `KMS_KEY_VERSION` | Key version (default: `1`) |
+ 
 
-## IAM Permissions
+### IAM Permissions
 Grant these roles to the service account:
 1. `roles/cloudkms.signer` (To sign)
 2. `roles/cloudkms.viewer` (To detect key size/algo during initialization)
 
 ```bash
-gcloud kms keys add-iam-policy-binding [KEY_ID] \
-  --location=[LOC] --keyring=[RING] \
+gcloud kms keys add-iam-policy-binding $KMS_KEY_ID \
+  --location=$KMS_LOCATION \
+  --keyring=$KMS_KEY_RING \
   --member="serviceAccount:[SA_EMAIL]" \
   --role="roles/cloudkms.signer"
+```
 
-gcloud kms keys add-iam-policy-binding [KEY_ID] \
-  --location=[LOC] --keyring=[RING] \
+```bash
+gcloud kms keys add-iam-policy-binding $KMS_KEY_ID \
+  --location=$KMS_LOCATION \
+  --keyring=$KMS_KEY_RING \
   --member="serviceAccount:[SA_EMAIL]" \
   --role="roles/cloudkms.viewer"
+```
   
+### Build
+```bash
+mvn clean package
+```
   
+### Deployment
+ 
+```bash
+ gcloud functions deploy witness-service \
+  --gen2 \
+  --runtime=java25 \
+  --entry-point=WitnessService \
+  --trigger-http \
+  --set-env-vars="KMS_LOCATION=$KMS_LOCATION,KMS_KEY_RING=$KMS_KEY_RING,KMS_KEY_ID=$KMS_KEY_ID"
+```
 
