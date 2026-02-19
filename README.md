@@ -93,7 +93,7 @@ mvn clean package
   --set-env-vars="KMS_LOCATION=$KMS_LOCATION,KMS_KEY_RING=$KMS_KEY_RING,KMS_KEY_ID=$KMS_KEY_ID"
 ```
 
-### Verify
+## Verify
 
 Combine request data and response data into a single signed JSON document.
 
